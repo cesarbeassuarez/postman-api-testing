@@ -170,6 +170,346 @@
       "response": []
     },
     {
+      "name": "POST - Login (user correcto, pass mal)",
+      "event": [
+        {
+          "listen": "prerequest",
+          "script": {
+            "exec": [
+              "const csrfCookie = pm.cookies.get('CSRF-TOKEN');\r",
+              "if (csrfCookie) {\r",
+              "    pm.variables.set('csrfToken', csrfCookie);\r",
+              "    console.log('csrfToken actualizado desde cookie jar');\r",
+              "} else {\r",
+              "    console.log('No se encontró la cookie CSRF-TOKEN');\r",
+              "}"
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        },
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Status code is 400\", function () {\r",
+              "    pm.response.to.have.status(400);\r",
+              "});\r",
+              "\r",
+              "pm.test(\"Response has AuthenticationError\", function () {\r",
+              "    const jsonData = pm.response.json();\r",
+              "    pm.expect(jsonData.Error).to.not.be.undefined;\r",
+              "    pm.expect(jsonData.Error.Code).to.eql(\"AuthenticationError\");\r",
+              "});\r",
+              "\r",
+              "pm.test(\"Error message is generic (no field hint)\", function () {\r",
+              "    const jsonData = pm.response.json();\r",
+              "    pm.expect(jsonData.Error.Message).to.eql(\"Invalid username or password!\");\r",
+              "});"
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "accept",
+            "value": "application/json"
+          },
+          {
+            "key": "content-type",
+            "value": "application/json"
+          },
+          {
+            "key": "x-csrf-token",
+            "value": "{{csrfToken}}",
+            "type": "text"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\"Username\":\"admin\",\"Password\":\"abcd\"}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{baseUrl}}/Account/Login",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "Account",
+            "Login"
+          ]
+        },
+        "description": "Generated from cURL: curl 'https://demo.serenity.is/Account/Login' \\\r\n  -H 'accept: application/json' \\\r\n  -H 'accept-language: es-ES,es;q=0.9' \\\r\n  -H 'cache-control: no-cache' \\\r\n  -H 'content-type: application/json' \\\r\n  -b '.AspNetCore.Antiforgery._e27I0JtFpk=CfDJ8CI7vciz_vpFhLi6flAXcCVdWWhnII9d8ICkV1JboBtwdYWHk349stMTpeoL8YvXf6tmjPLuM1biNKz3hMN6BKSRhHOU4dmpb9SqGqJLp0BQZpvqNP1NGwqqmYJITL-AJChcuppGLKGaaxjmiN0hi5o; CSRF-TOKEN=CfDJ8CI7vciz_vpFhLi6flAXcCWduIeQ4l07k70AwFM6BYhK6lfUUhBEVvWxGZOqp9YiCBC-Mkl_C850io4UR0TpGvb6DP-rurqFqT4TaBO_FtdIOYvRT4aQABkKZrzbhSbnW8xjXCwjWzW3nvoYQi-EvRY' \\\r\n  -H 'origin: https://demo.serenity.is' \\\r\n  -H 'pragma: no-cache' \\\r\n  -H 'priority: u=1, i' \\\r\n  -H 'referer: https://demo.serenity.is/Account/Login/?ReturnUrl=%2F' \\\r\n  -H 'sec-ch-ua: \"Not:A-Brand\";v=\"99\", \"Google Chrome\";v=\"145\", \"Chromium\";v=\"145\"' \\\r\n  -H 'sec-ch-ua-mobile: ?1' \\\r\n  -H 'sec-ch-ua-platform: \"Android\"' \\\r\n  -H 'sec-fetch-dest: empty' \\\r\n  -H 'sec-fetch-mode: cors' \\\r\n  -H 'sec-fetch-site: same-origin' \\\r\n  -H 'user-agent: Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Mobile Safari/537.36' \\\r\n  -H 'x-csrf-token: CfDJ8CI7vciz_vpFhLi6flAXcCWduIeQ4l07k70AwFM6BYhK6lfUUhBEVvWxGZOqp9YiCBC-Mkl_C850io4UR0TpGvb6DP-rurqFqT4TaBO_FtdIOYvRT4aQABkKZrzbhSbnW8xjXCwjWzW3nvoYQi-EvRY' \\\r\n  --data-raw '{\"Username\":\"admin\",\"Password\":\"serenity\"}'"
+      },
+      "response": []
+    },
+    {
+      "name": "POST - Login (user mal, pass correcta)",
+      "event": [
+        {
+          "listen": "prerequest",
+          "script": {
+            "exec": [
+              "const csrfCookie = pm.cookies.get('CSRF-TOKEN');\r",
+              "if (csrfCookie) {\r",
+              "    pm.variables.set('csrfToken', csrfCookie);\r",
+              "    console.log('csrfToken actualizado desde cookie jar');\r",
+              "} else {\r",
+              "    console.log('No se encontró la cookie CSRF-TOKEN');\r",
+              "}"
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        },
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Status code is 400\", function () {\r",
+              "    pm.response.to.have.status(400);\r",
+              "});\r",
+              "\r",
+              "pm.test(\"Response has AuthenticationError\", function () {\r",
+              "    const jsonData = pm.response.json();\r",
+              "    pm.expect(jsonData.Error).to.not.be.undefined;\r",
+              "    pm.expect(jsonData.Error.Code).to.eql(\"AuthenticationError\");\r",
+              "});\r",
+              "\r",
+              "pm.test(\"Error message is generic (no field hint)\", function () {\r",
+              "    const jsonData = pm.response.json();\r",
+              "    pm.expect(jsonData.Error.Message).to.eql(\"Invalid username or password!\");\r",
+              "});"
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "accept",
+            "value": "application/json"
+          },
+          {
+            "key": "content-type",
+            "value": "application/json"
+          },
+          {
+            "key": "x-csrf-token",
+            "value": "{{csrfToken}}",
+            "type": "text"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\"Username\":\"abcd\",\"Password\":\"serenity\"}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{baseUrl}}/Account/Login",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "Account",
+            "Login"
+          ]
+        },
+        "description": "Generated from cURL: curl 'https://demo.serenity.is/Account/Login' \\\r\n  -H 'accept: application/json' \\\r\n  -H 'accept-language: es-ES,es;q=0.9' \\\r\n  -H 'cache-control: no-cache' \\\r\n  -H 'content-type: application/json' \\\r\n  -b '.AspNetCore.Antiforgery._e27I0JtFpk=CfDJ8CI7vciz_vpFhLi6flAXcCVdWWhnII9d8ICkV1JboBtwdYWHk349stMTpeoL8YvXf6tmjPLuM1biNKz3hMN6BKSRhHOU4dmpb9SqGqJLp0BQZpvqNP1NGwqqmYJITL-AJChcuppGLKGaaxjmiN0hi5o; CSRF-TOKEN=CfDJ8CI7vciz_vpFhLi6flAXcCWduIeQ4l07k70AwFM6BYhK6lfUUhBEVvWxGZOqp9YiCBC-Mkl_C850io4UR0TpGvb6DP-rurqFqT4TaBO_FtdIOYvRT4aQABkKZrzbhSbnW8xjXCwjWzW3nvoYQi-EvRY' \\\r\n  -H 'origin: https://demo.serenity.is' \\\r\n  -H 'pragma: no-cache' \\\r\n  -H 'priority: u=1, i' \\\r\n  -H 'referer: https://demo.serenity.is/Account/Login/?ReturnUrl=%2F' \\\r\n  -H 'sec-ch-ua: \"Not:A-Brand\";v=\"99\", \"Google Chrome\";v=\"145\", \"Chromium\";v=\"145\"' \\\r\n  -H 'sec-ch-ua-mobile: ?1' \\\r\n  -H 'sec-ch-ua-platform: \"Android\"' \\\r\n  -H 'sec-fetch-dest: empty' \\\r\n  -H 'sec-fetch-mode: cors' \\\r\n  -H 'sec-fetch-site: same-origin' \\\r\n  -H 'user-agent: Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Mobile Safari/537.36' \\\r\n  -H 'x-csrf-token: CfDJ8CI7vciz_vpFhLi6flAXcCWduIeQ4l07k70AwFM6BYhK6lfUUhBEVvWxGZOqp9YiCBC-Mkl_C850io4UR0TpGvb6DP-rurqFqT4TaBO_FtdIOYvRT4aQABkKZrzbhSbnW8xjXCwjWzW3nvoYQi-EvRY' \\\r\n  --data-raw '{\"Username\":\"admin\",\"Password\":\"serenity\"}'"
+      },
+      "response": []
+    },
+    {
+      "name": "POST - Login (user y pass incorrectos)",
+      "event": [
+        {
+          "listen": "prerequest",
+          "script": {
+            "exec": [
+              "const csrfCookie = pm.cookies.get('CSRF-TOKEN');\r",
+              "if (csrfCookie) {\r",
+              "    pm.variables.set('csrfToken', csrfCookie);\r",
+              "    console.log('csrfToken actualizado desde cookie jar');\r",
+              "} else {\r",
+              "    console.log('No se encontró la cookie CSRF-TOKEN');\r",
+              "}"
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        },
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Status code is 400\", function () {\r",
+              "    pm.response.to.have.status(400);\r",
+              "});\r",
+              "\r",
+              "pm.test(\"Response has AuthenticationError\", function () {\r",
+              "    const jsonData = pm.response.json();\r",
+              "    pm.expect(jsonData.Error).to.not.be.undefined;\r",
+              "    pm.expect(jsonData.Error.Code).to.eql(\"AuthenticationError\");\r",
+              "});\r",
+              "\r",
+              "pm.test(\"Error message is generic (no field hint)\", function () {\r",
+              "    const jsonData = pm.response.json();\r",
+              "    pm.expect(jsonData.Error.Message).to.eql(\"Invalid username or password!\");\r",
+              "});"
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "accept",
+            "value": "application/json"
+          },
+          {
+            "key": "content-type",
+            "value": "application/json"
+          },
+          {
+            "key": "x-csrf-token",
+            "value": "{{csrfToken}}",
+            "type": "text"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\"Username\":\"abcd\",\"Password\":\"abcd\"}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{baseUrl}}/Account/Login",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "Account",
+            "Login"
+          ]
+        },
+        "description": "Generated from cURL: curl 'https://demo.serenity.is/Account/Login' \\\r\n  -H 'accept: application/json' \\\r\n  -H 'accept-language: es-ES,es;q=0.9' \\\r\n  -H 'cache-control: no-cache' \\\r\n  -H 'content-type: application/json' \\\r\n  -b '.AspNetCore.Antiforgery._e27I0JtFpk=CfDJ8CI7vciz_vpFhLi6flAXcCVdWWhnII9d8ICkV1JboBtwdYWHk349stMTpeoL8YvXf6tmjPLuM1biNKz3hMN6BKSRhHOU4dmpb9SqGqJLp0BQZpvqNP1NGwqqmYJITL-AJChcuppGLKGaaxjmiN0hi5o; CSRF-TOKEN=CfDJ8CI7vciz_vpFhLi6flAXcCWduIeQ4l07k70AwFM6BYhK6lfUUhBEVvWxGZOqp9YiCBC-Mkl_C850io4UR0TpGvb6DP-rurqFqT4TaBO_FtdIOYvRT4aQABkKZrzbhSbnW8xjXCwjWzW3nvoYQi-EvRY' \\\r\n  -H 'origin: https://demo.serenity.is' \\\r\n  -H 'pragma: no-cache' \\\r\n  -H 'priority: u=1, i' \\\r\n  -H 'referer: https://demo.serenity.is/Account/Login/?ReturnUrl=%2F' \\\r\n  -H 'sec-ch-ua: \"Not:A-Brand\";v=\"99\", \"Google Chrome\";v=\"145\", \"Chromium\";v=\"145\"' \\\r\n  -H 'sec-ch-ua-mobile: ?1' \\\r\n  -H 'sec-ch-ua-platform: \"Android\"' \\\r\n  -H 'sec-fetch-dest: empty' \\\r\n  -H 'sec-fetch-mode: cors' \\\r\n  -H 'sec-fetch-site: same-origin' \\\r\n  -H 'user-agent: Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Mobile Safari/537.36' \\\r\n  -H 'x-csrf-token: CfDJ8CI7vciz_vpFhLi6flAXcCWduIeQ4l07k70AwFM6BYhK6lfUUhBEVvWxGZOqp9YiCBC-Mkl_C850io4UR0TpGvb6DP-rurqFqT4TaBO_FtdIOYvRT4aQABkKZrzbhSbnW8xjXCwjWzW3nvoYQi-EvRY' \\\r\n  --data-raw '{\"Username\":\"admin\",\"Password\":\"serenity\"}'"
+      },
+      "response": []
+    },
+    {
+      "name": "POST - Login (user y pass vacios)",
+      "event": [
+        {
+          "listen": "prerequest",
+          "script": {
+            "exec": [
+              "const csrfCookie = pm.cookies.get('CSRF-TOKEN');\r",
+              "if (csrfCookie) {\r",
+              "    pm.variables.set('csrfToken', csrfCookie);\r",
+              "    console.log('csrfToken actualizado desde cookie jar');\r",
+              "} else {\r",
+              "    console.log('No se encontró la cookie CSRF-TOKEN');\r",
+              "}"
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        },
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Status code is 500\", function () {\r",
+              "    pm.response.to.have.status(500);\r",
+              "});\r",
+              "\r",
+              "pm.test(\"Response has Exception error\", function () {\r",
+              "    const jsonData = pm.response.json();\r",
+              "    pm.expect(jsonData.Error).to.not.be.undefined;\r",
+              "    pm.expect(jsonData.Error.Code).to.eql(\"Exception\");\r",
+              "});\r",
+              "\r",
+              "pm.test(\"Error message is generic server error\", function () {\r",
+              "    const jsonData = pm.response.json();\r",
+              "    pm.expect(jsonData.Error.Message).to.eql(\"An error occurred while processing your request.\");\r",
+              "});"
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "accept",
+            "value": "application/json"
+          },
+          {
+            "key": "content-type",
+            "value": "application/json"
+          },
+          {
+            "key": "x-csrf-token",
+            "value": "{{csrfToken}}",
+            "type": "text"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\"Username\":\"\",\"Password\":\"\"}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{baseUrl}}/Account/Login",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "Account",
+            "Login"
+          ]
+        },
+        "description": "Generated from cURL: curl 'https://demo.serenity.is/Account/Login' \\\r\n  -H 'accept: application/json' \\\r\n  -H 'accept-language: es-ES,es;q=0.9' \\\r\n  -H 'cache-control: no-cache' \\\r\n  -H 'content-type: application/json' \\\r\n  -b '.AspNetCore.Antiforgery._e27I0JtFpk=CfDJ8CI7vciz_vpFhLi6flAXcCVdWWhnII9d8ICkV1JboBtwdYWHk349stMTpeoL8YvXf6tmjPLuM1biNKz3hMN6BKSRhHOU4dmpb9SqGqJLp0BQZpvqNP1NGwqqmYJITL-AJChcuppGLKGaaxjmiN0hi5o; CSRF-TOKEN=CfDJ8CI7vciz_vpFhLi6flAXcCWduIeQ4l07k70AwFM6BYhK6lfUUhBEVvWxGZOqp9YiCBC-Mkl_C850io4UR0TpGvb6DP-rurqFqT4TaBO_FtdIOYvRT4aQABkKZrzbhSbnW8xjXCwjWzW3nvoYQi-EvRY' \\\r\n  -H 'origin: https://demo.serenity.is' \\\r\n  -H 'pragma: no-cache' \\\r\n  -H 'priority: u=1, i' \\\r\n  -H 'referer: https://demo.serenity.is/Account/Login/?ReturnUrl=%2F' \\\r\n  -H 'sec-ch-ua: \"Not:A-Brand\";v=\"99\", \"Google Chrome\";v=\"145\", \"Chromium\";v=\"145\"' \\\r\n  -H 'sec-ch-ua-mobile: ?1' \\\r\n  -H 'sec-ch-ua-platform: \"Android\"' \\\r\n  -H 'sec-fetch-dest: empty' \\\r\n  -H 'sec-fetch-mode: cors' \\\r\n  -H 'sec-fetch-site: same-origin' \\\r\n  -H 'user-agent: Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Mobile Safari/537.36' \\\r\n  -H 'x-csrf-token: CfDJ8CI7vciz_vpFhLi6flAXcCWduIeQ4l07k70AwFM6BYhK6lfUUhBEVvWxGZOqp9YiCBC-Mkl_C850io4UR0TpGvb6DP-rurqFqT4TaBO_FtdIOYvRT4aQABkKZrzbhSbnW8xjXCwjWzW3nvoYQi-EvRY' \\\r\n  --data-raw '{\"Username\":\"admin\",\"Password\":\"serenity\"}'"
+      },
+      "response": []
+    },
+    {
       "name": "POST - Customer List",
       "event": [
         {
