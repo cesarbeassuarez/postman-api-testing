@@ -92,12 +92,14 @@
           "listen": "prerequest",
           "script": {
             "exec": [
-              "const csrfCookie = pm.cookies.get('CSRF-TOKEN');\r",
-              "if (csrfCookie) {\r",
-              "    pm.variables.set('csrfToken', csrfCookie);\r",
-              "    console.log('csrfToken actualizado desde cookie jar');\r",
+              "const csrf = pm.environment.get(\"csrfToken\");\r",
+              "if (csrf) {\r",
+              "    pm.request.headers.upsert({\r",
+              "        key: \"x-csrf-token\",\r",
+              "        value: csrf\r",
+              "    });\r",
               "} else {\r",
-              "    console.log('No se encontró la cookie CSRF-TOKEN');\r",
+              "    console.log(\"No hay csrf_token en environment para Customer List\");\r",
               "}"
             ],
             "type": "text/javascript",
@@ -109,6 +111,8 @@
           "listen": "test",
           "script": {
             "exec": [
+              "\r",
+              "// Tests existentes\r",
               "pm.test(\"Status code is 200\", function () {\r",
               "    pm.response.to.have.status(200);\r",
               "});\r",
@@ -166,6 +170,48 @@
           ]
         },
         "description": "Generated from cURL: curl 'https://demo.serenity.is/Account/Login' \\\r\n  -H 'accept: application/json' \\\r\n  -H 'accept-language: es-ES,es;q=0.9' \\\r\n  -H 'cache-control: no-cache' \\\r\n  -H 'content-type: application/json' \\\r\n  -b '.AspNetCore.Antiforgery._e27I0JtFpk=CfDJ8CI7vciz_vpFhLi6flAXcCVdWWhnII9d8ICkV1JboBtwdYWHk349stMTpeoL8YvXf6tmjPLuM1biNKz3hMN6BKSRhHOU4dmpb9SqGqJLp0BQZpvqNP1NGwqqmYJITL-AJChcuppGLKGaaxjmiN0hi5o; CSRF-TOKEN=CfDJ8CI7vciz_vpFhLi6flAXcCWduIeQ4l07k70AwFM6BYhK6lfUUhBEVvWxGZOqp9YiCBC-Mkl_C850io4UR0TpGvb6DP-rurqFqT4TaBO_FtdIOYvRT4aQABkKZrzbhSbnW8xjXCwjWzW3nvoYQi-EvRY' \\\r\n  -H 'origin: https://demo.serenity.is' \\\r\n  -H 'pragma: no-cache' \\\r\n  -H 'priority: u=1, i' \\\r\n  -H 'referer: https://demo.serenity.is/Account/Login/?ReturnUrl=%2F' \\\r\n  -H 'sec-ch-ua: \"Not:A-Brand\";v=\"99\", \"Google Chrome\";v=\"145\", \"Chromium\";v=\"145\"' \\\r\n  -H 'sec-ch-ua-mobile: ?1' \\\r\n  -H 'sec-ch-ua-platform: \"Android\"' \\\r\n  -H 'sec-fetch-dest: empty' \\\r\n  -H 'sec-fetch-mode: cors' \\\r\n  -H 'sec-fetch-site: same-origin' \\\r\n  -H 'user-agent: Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Mobile Safari/537.36' \\\r\n  -H 'x-csrf-token: CfDJ8CI7vciz_vpFhLi6flAXcCWduIeQ4l07k70AwFM6BYhK6lfUUhBEVvWxGZOqp9YiCBC-Mkl_C850io4UR0TpGvb6DP-rurqFqT4TaBO_FtdIOYvRT4aQABkKZrzbhSbnW8xjXCwjWzW3nvoYQi-EvRY' \\\r\n  --data-raw '{\"Username\":\"admin\",\"Password\":\"serenity\"}'"
+      },
+      "response": []
+    },
+    {
+      "name": "GET - Refresh Token (Post-Login)",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "const csrfCookie = pm.cookies.get(\"CSRF-TOKEN\");\r",
+              "if (csrfCookie) {\r",
+              "    pm.environment.set(\"csrfToken\", csrfCookie);\r",
+              "    console.log(\"CSRF token refreshed post-login:\", csrfCookie.substring(0, 50) + \"...\");\r",
+              "}"
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/Account/Login/?ReturnUrl=%2F",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "Account",
+            "Login",
+            ""
+          ],
+          "query": [
+            {
+              "key": "ReturnUrl",
+              "value": "%2F"
+            }
+          ]
+        }
       },
       "response": []
     },
@@ -516,13 +562,14 @@
           "listen": "prerequest",
           "script": {
             "exec": [
-              "const csrfCookie = pm.cookies.get('CSRF-TOKEN');\r",
-              "\r",
-              "if (csrfCookie) {\r",
-              "    pm.variables.set('csrfToken', csrfCookie);\r",
-              "    console.log('csrfToken actualizado en Customer List desde cookie jar');\r",
+              "const csrf = pm.environment.get(\"csrfToken\");\r",
+              "if (csrf) {\r",
+              "    pm.request.headers.upsert({\r",
+              "        key: \"x-csrf-token\",\r",
+              "        value: csrf\r",
+              "    });\r",
               "} else {\r",
-              "    console.log('No se encontró CSRF-TOKEN en Customer List');\r",
+              "    console.log(\"No hay csrfToken en environment para Customer List\");\r",
               "}"
             ],
             "type": "text/javascript",
