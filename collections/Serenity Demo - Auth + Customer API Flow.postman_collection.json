@@ -813,6 +813,238 @@
       "response": []
     },
     {
+      "name": "POST - Retrieve Customer",
+      "event": [
+        {
+          "listen": "prerequest",
+          "script": {
+            "exec": [
+              "const csrf = pm.environment.get(\"csrfToken\");\r",
+              "if (csrf) {\r",
+              "    pm.request.headers.upsert({\r",
+              "        key: \"x-csrf-token\",\r",
+              "        value: csrf\r",
+              "    });\r",
+              "} else {\r",
+              "    console.log(\"No hay csrfToken en environment para POST - Retrieve Customer\");\r",
+              "}"
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        },
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Status code is 200\", function () {\r",
+              "    pm.response.to.have.status(200);\r",
+              "});\r",
+              "\r",
+              "pm.test(\"Entity is CESBS\", function () {\r",
+              "    const jsonData = pm.response.json();\r",
+              "    pm.expect(jsonData.Entity.CustomerID).to.eql(\"CESBS\");\r",
+              "    pm.expect(jsonData.Entity.ContactName).to.eql(\"Cesar Beas Suarez\");\r",
+              "});"
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "x-csrf-token",
+            "value": "{{csrfToken}}",
+            "type": "text"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n    \"EntityId\": \"CESBS\"\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{baseUrl}}/Services/Northwind/Customer/Retrieve",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "Services",
+            "Northwind",
+            "Customer",
+            "Retrieve"
+          ]
+        },
+        "description": "Obtiene los datos completos del cliente CESBS vía /Customer/Retrieve. Valida 200 + CustomerID y ContactName originales. Estado \"antes\" del Update."
+      },
+      "response": []
+    },
+    {
+      "name": "POST - Update Customer",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Status code is 200\", function () {\r",
+              "    pm.response.to.have.status(200);\r",
+              "});\r",
+              "\r",
+              "pm.test(\"EntityId is CESBS\", function () {\r",
+              "    const jsonData = pm.response.json();\r",
+              "    pm.expect(jsonData.EntityId).to.eql(\"CESBS\");\r",
+              "});"
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        },
+        {
+          "listen": "prerequest",
+          "script": {
+            "exec": [
+              "const csrf = pm.environment.get(\"csrfToken\");\r",
+              "if (csrf) {\r",
+              "    pm.request.headers.upsert({\r",
+              "        key: \"x-csrf-token\",\r",
+              "        value: csrf\r",
+              "    });\r",
+              "} else {\r",
+              "    console.log(\"No hay csrfToken en environment para POST - Update Customer\");\r",
+              "}"
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "x-csrf-token",
+            "value": "{{csrfToken}}",
+            "type": "text"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n    \"Entity\": {\r\n        \"CustomerID\": \"CESBS\",\r\n        \"CompanyName\": \"CesarBeasSuarez Industries\",\r\n        \"ContactName\": \"Cesar Beas Suarez UPDATED\",\r\n        \"ContactTitle\": \"SEO\",\r\n        \"Country\": \"Argentina\",\r\n        \"City\": \"Buenos Aires\",\r\n        \"Phone\": \"3517898989\"\r\n    },\r\n    \"EntityId\": \"CESBS\"\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{baseUrl}}/Services/Northwind/Customer/Update",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "Services",
+            "Northwind",
+            "Customer",
+            "Update"
+          ]
+        },
+        "description": "Modifica ContactName de CESBS a \"UPDATED\" vía /Customer/Update. Valida 200 + EntityId retornado. Body mínimo, sin campos vacíos."
+      },
+      "response": []
+    },
+    {
+      "name": "POST - Retrieve Customer (Verify Update)",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Status code is 200\", function () {\r",
+              "    pm.response.to.have.status(200);\r",
+              "});\r",
+              "\r",
+              "pm.test(\"ContactName was updated\", function () {\r",
+              "    const jsonData = pm.response.json();\r",
+              "    pm.expect(jsonData.Entity.ContactName).to.eql(\"Cesar Beas Suarez UPDATED\");\r",
+              "});\r",
+              "\r",
+              "pm.test(\"Other fields unchanged\", function () {\r",
+              "    const jsonData = pm.response.json();\r",
+              "    pm.expect(jsonData.Entity.CompanyName).to.eql(\"CesarBeasSuarez Industries\");\r",
+              "    pm.expect(jsonData.Entity.CustomerID).to.eql(\"CESBS\");\r",
+              "});"
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        },
+        {
+          "listen": "prerequest",
+          "script": {
+            "exec": [
+              "const csrf = pm.environment.get(\"csrfToken\");\r",
+              "if (csrf) {\r",
+              "    pm.request.headers.upsert({\r",
+              "        key: \"x-csrf-token\",\r",
+              "        value: csrf\r",
+              "    });\r",
+              "} else {\r",
+              "    console.log(\"No hay csrfToken en environment para POST - Retrieve Customer (Verify Update)\");\r",
+              "}"
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "x-csrf-token",
+            "value": "{{csrfToken}}",
+            "type": "text"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n    \"EntityId\": \"CESBS\"\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{baseUrl}}/Services/Northwind/Customer/Retrieve",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "Services",
+            "Northwind",
+            "Customer",
+            "Retrieve"
+          ]
+        },
+        "description": "Segundo Retrieve sobre CESBS para confirmar que el Update se aplicó. Valida que ContactName cambió y que CompanyName y CustomerID no se alteraron."
+      },
+      "response": []
+    },
+    {
       "name": "POST - Delete Customer",
       "event": [
         {
@@ -965,6 +1197,82 @@
           ]
         },
         "description": "Verifica que CESBS desapareció de la grilla. TotalCount debe volver a 91 y CESBS no debe estar en Entities."
+      },
+      "response": []
+    },
+    {
+      "name": "POST - Update Customer (Non-existent)",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Status code is 400\", function () {\r",
+              "    pm.response.to.have.status(400);\r",
+              "});\r",
+              "\r",
+              "pm.test(\"Error is returned\", function () {\r",
+              "    const jsonData = pm.response.json();\r",
+              "    pm.expect(jsonData).to.have.property(\"Error\");\r",
+              "    pm.expect(jsonData.Error).to.have.property(\"Message\");\r",
+              "});"
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        },
+        {
+          "listen": "prerequest",
+          "script": {
+            "exec": [
+              "const csrf = pm.environment.get(\"csrfToken\");\r",
+              "if (csrf) {\r",
+              "    pm.request.headers.upsert({\r",
+              "        key: \"x-csrf-token\",\r",
+              "        value: csrf\r",
+              "    });\r",
+              "} else {\r",
+              "    console.log(\"No hay csrfToken en environment para POST - Update Customer (Non-existent)\");\r",
+              "}"
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "x-csrf-token",
+            "value": "{{csrfToken}}",
+            "type": "text"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n    \"Entity\": {\r\n        \"CustomerID\": \"XXXXX\",\r\n        \"CompanyName\": \"No Existe\",\r\n        \"ContactName\": \"Nadie\"\r\n    },\r\n    \"EntityId\": \"XXXXX\"\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{baseUrl}}/Services/Northwind/Customer/Update",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "Services",
+            "Northwind",
+            "Customer",
+            "Update"
+          ]
+        },
+        "description": "Intenta modificar un cliente inexistente (XXXXX). Valida 400 + objeto Error con Message. Mismo patrón EntityNotFound que Delete."
       },
       "response": []
     }
