@@ -45,8 +45,12 @@
         {
           "listen": "prerequest",
           "script": {
+            "exec": [
+              ""
+            ],
+            "type": "text/javascript",
             "packages": {},
-            "type": "text/javascript"
+            "requests": {}
           }
         }
       ],
@@ -81,7 +85,8 @@
               "value": "%2F"
             }
           ]
-        }
+        },
+        "description": "StartFragmentObtiene el token CSRF para usuario anónimo. Primera request del flujo."
       },
       "response": []
     },
@@ -169,7 +174,7 @@
             "Login"
           ]
         },
-        "description": "Generated from cURL: curl 'https://demo.serenity.is/Account/Login' \\\r\n  -H 'accept: application/json' \\\r\n  -H 'accept-language: es-ES,es;q=0.9' \\\r\n  -H 'cache-control: no-cache' \\\r\n  -H 'content-type: application/json' \\\r\n  -b '.AspNetCore.Antiforgery._e27I0JtFpk=CfDJ8CI7vciz_vpFhLi6flAXcCVdWWhnII9d8ICkV1JboBtwdYWHk349stMTpeoL8YvXf6tmjPLuM1biNKz3hMN6BKSRhHOU4dmpb9SqGqJLp0BQZpvqNP1NGwqqmYJITL-AJChcuppGLKGaaxjmiN0hi5o; CSRF-TOKEN=CfDJ8CI7vciz_vpFhLi6flAXcCWduIeQ4l07k70AwFM6BYhK6lfUUhBEVvWxGZOqp9YiCBC-Mkl_C850io4UR0TpGvb6DP-rurqFqT4TaBO_FtdIOYvRT4aQABkKZrzbhSbnW8xjXCwjWzW3nvoYQi-EvRY' \\\r\n  -H 'origin: https://demo.serenity.is' \\\r\n  -H 'pragma: no-cache' \\\r\n  -H 'priority: u=1, i' \\\r\n  -H 'referer: https://demo.serenity.is/Account/Login/?ReturnUrl=%2F' \\\r\n  -H 'sec-ch-ua: \"Not:A-Brand\";v=\"99\", \"Google Chrome\";v=\"145\", \"Chromium\";v=\"145\"' \\\r\n  -H 'sec-ch-ua-mobile: ?1' \\\r\n  -H 'sec-ch-ua-platform: \"Android\"' \\\r\n  -H 'sec-fetch-dest: empty' \\\r\n  -H 'sec-fetch-mode: cors' \\\r\n  -H 'sec-fetch-site: same-origin' \\\r\n  -H 'user-agent: Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Mobile Safari/537.36' \\\r\n  -H 'x-csrf-token: CfDJ8CI7vciz_vpFhLi6flAXcCWduIeQ4l07k70AwFM6BYhK6lfUUhBEVvWxGZOqp9YiCBC-Mkl_C850io4UR0TpGvb6DP-rurqFqT4TaBO_FtdIOYvRT4aQABkKZrzbhSbnW8xjXCwjWzW3nvoYQi-EvRY' \\\r\n  --data-raw '{\"Username\":\"admin\",\"Password\":\"serenity\"}'"
+        "description": "Autentica con credenciales válidas. Cambia la identidad de anónimo a autenticado."
       },
       "response": []
     },
@@ -211,7 +216,8 @@
               "value": "%2F"
             }
           ]
-        }
+        },
+        "description": "Obtiene CSRF token nuevo para la sesión autenticada. Necesario porque el token anterior era de usuario anónimo."
       },
       "response": []
     },
@@ -296,7 +302,7 @@
             "Login"
           ]
         },
-        "description": "Generated from cURL: curl 'https://demo.serenity.is/Account/Login' \\\r\n  -H 'accept: application/json' \\\r\n  -H 'accept-language: es-ES,es;q=0.9' \\\r\n  -H 'cache-control: no-cache' \\\r\n  -H 'content-type: application/json' \\\r\n  -b '.AspNetCore.Antiforgery._e27I0JtFpk=CfDJ8CI7vciz_vpFhLi6flAXcCVdWWhnII9d8ICkV1JboBtwdYWHk349stMTpeoL8YvXf6tmjPLuM1biNKz3hMN6BKSRhHOU4dmpb9SqGqJLp0BQZpvqNP1NGwqqmYJITL-AJChcuppGLKGaaxjmiN0hi5o; CSRF-TOKEN=CfDJ8CI7vciz_vpFhLi6flAXcCWduIeQ4l07k70AwFM6BYhK6lfUUhBEVvWxGZOqp9YiCBC-Mkl_C850io4UR0TpGvb6DP-rurqFqT4TaBO_FtdIOYvRT4aQABkKZrzbhSbnW8xjXCwjWzW3nvoYQi-EvRY' \\\r\n  -H 'origin: https://demo.serenity.is' \\\r\n  -H 'pragma: no-cache' \\\r\n  -H 'priority: u=1, i' \\\r\n  -H 'referer: https://demo.serenity.is/Account/Login/?ReturnUrl=%2F' \\\r\n  -H 'sec-ch-ua: \"Not:A-Brand\";v=\"99\", \"Google Chrome\";v=\"145\", \"Chromium\";v=\"145\"' \\\r\n  -H 'sec-ch-ua-mobile: ?1' \\\r\n  -H 'sec-ch-ua-platform: \"Android\"' \\\r\n  -H 'sec-fetch-dest: empty' \\\r\n  -H 'sec-fetch-mode: cors' \\\r\n  -H 'sec-fetch-site: same-origin' \\\r\n  -H 'user-agent: Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Mobile Safari/537.36' \\\r\n  -H 'x-csrf-token: CfDJ8CI7vciz_vpFhLi6flAXcCWduIeQ4l07k70AwFM6BYhK6lfUUhBEVvWxGZOqp9YiCBC-Mkl_C850io4UR0TpGvb6DP-rurqFqT4TaBO_FtdIOYvRT4aQABkKZrzbhSbnW8xjXCwjWzW3nvoYQi-EvRY' \\\r\n  --data-raw '{\"Username\":\"admin\",\"Password\":\"serenity\"}'"
+        "description": "Testing negativo: credenciales con password incorrecta. Espera 400 + AuthenticationError."
       },
       "response": []
     },
@@ -381,7 +387,7 @@
             "Login"
           ]
         },
-        "description": "Generated from cURL: curl 'https://demo.serenity.is/Account/Login' \\\r\n  -H 'accept: application/json' \\\r\n  -H 'accept-language: es-ES,es;q=0.9' \\\r\n  -H 'cache-control: no-cache' \\\r\n  -H 'content-type: application/json' \\\r\n  -b '.AspNetCore.Antiforgery._e27I0JtFpk=CfDJ8CI7vciz_vpFhLi6flAXcCVdWWhnII9d8ICkV1JboBtwdYWHk349stMTpeoL8YvXf6tmjPLuM1biNKz3hMN6BKSRhHOU4dmpb9SqGqJLp0BQZpvqNP1NGwqqmYJITL-AJChcuppGLKGaaxjmiN0hi5o; CSRF-TOKEN=CfDJ8CI7vciz_vpFhLi6flAXcCWduIeQ4l07k70AwFM6BYhK6lfUUhBEVvWxGZOqp9YiCBC-Mkl_C850io4UR0TpGvb6DP-rurqFqT4TaBO_FtdIOYvRT4aQABkKZrzbhSbnW8xjXCwjWzW3nvoYQi-EvRY' \\\r\n  -H 'origin: https://demo.serenity.is' \\\r\n  -H 'pragma: no-cache' \\\r\n  -H 'priority: u=1, i' \\\r\n  -H 'referer: https://demo.serenity.is/Account/Login/?ReturnUrl=%2F' \\\r\n  -H 'sec-ch-ua: \"Not:A-Brand\";v=\"99\", \"Google Chrome\";v=\"145\", \"Chromium\";v=\"145\"' \\\r\n  -H 'sec-ch-ua-mobile: ?1' \\\r\n  -H 'sec-ch-ua-platform: \"Android\"' \\\r\n  -H 'sec-fetch-dest: empty' \\\r\n  -H 'sec-fetch-mode: cors' \\\r\n  -H 'sec-fetch-site: same-origin' \\\r\n  -H 'user-agent: Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Mobile Safari/537.36' \\\r\n  -H 'x-csrf-token: CfDJ8CI7vciz_vpFhLi6flAXcCWduIeQ4l07k70AwFM6BYhK6lfUUhBEVvWxGZOqp9YiCBC-Mkl_C850io4UR0TpGvb6DP-rurqFqT4TaBO_FtdIOYvRT4aQABkKZrzbhSbnW8xjXCwjWzW3nvoYQi-EvRY' \\\r\n  --data-raw '{\"Username\":\"admin\",\"Password\":\"serenity\"}'"
+        "description": "Testing negativo: usuario inexistente. Espera 400 + AuthenticationError (mismo mensaje, no revela qué campo falló)."
       },
       "response": []
     },
@@ -466,7 +472,7 @@
             "Login"
           ]
         },
-        "description": "Generated from cURL: curl 'https://demo.serenity.is/Account/Login' \\\r\n  -H 'accept: application/json' \\\r\n  -H 'accept-language: es-ES,es;q=0.9' \\\r\n  -H 'cache-control: no-cache' \\\r\n  -H 'content-type: application/json' \\\r\n  -b '.AspNetCore.Antiforgery._e27I0JtFpk=CfDJ8CI7vciz_vpFhLi6flAXcCVdWWhnII9d8ICkV1JboBtwdYWHk349stMTpeoL8YvXf6tmjPLuM1biNKz3hMN6BKSRhHOU4dmpb9SqGqJLp0BQZpvqNP1NGwqqmYJITL-AJChcuppGLKGaaxjmiN0hi5o; CSRF-TOKEN=CfDJ8CI7vciz_vpFhLi6flAXcCWduIeQ4l07k70AwFM6BYhK6lfUUhBEVvWxGZOqp9YiCBC-Mkl_C850io4UR0TpGvb6DP-rurqFqT4TaBO_FtdIOYvRT4aQABkKZrzbhSbnW8xjXCwjWzW3nvoYQi-EvRY' \\\r\n  -H 'origin: https://demo.serenity.is' \\\r\n  -H 'pragma: no-cache' \\\r\n  -H 'priority: u=1, i' \\\r\n  -H 'referer: https://demo.serenity.is/Account/Login/?ReturnUrl=%2F' \\\r\n  -H 'sec-ch-ua: \"Not:A-Brand\";v=\"99\", \"Google Chrome\";v=\"145\", \"Chromium\";v=\"145\"' \\\r\n  -H 'sec-ch-ua-mobile: ?1' \\\r\n  -H 'sec-ch-ua-platform: \"Android\"' \\\r\n  -H 'sec-fetch-dest: empty' \\\r\n  -H 'sec-fetch-mode: cors' \\\r\n  -H 'sec-fetch-site: same-origin' \\\r\n  -H 'user-agent: Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Mobile Safari/537.36' \\\r\n  -H 'x-csrf-token: CfDJ8CI7vciz_vpFhLi6flAXcCWduIeQ4l07k70AwFM6BYhK6lfUUhBEVvWxGZOqp9YiCBC-Mkl_C850io4UR0TpGvb6DP-rurqFqT4TaBO_FtdIOYvRT4aQABkKZrzbhSbnW8xjXCwjWzW3nvoYQi-EvRY' \\\r\n  --data-raw '{\"Username\":\"admin\",\"Password\":\"serenity\"}'"
+        "description": "Testing negativo: ambos campos incorrectos. Espera 400 + AuthenticationError."
       },
       "response": []
     },
@@ -551,7 +557,7 @@
             "Login"
           ]
         },
-        "description": "Generated from cURL: curl 'https://demo.serenity.is/Account/Login' \\\r\n  -H 'accept: application/json' \\\r\n  -H 'accept-language: es-ES,es;q=0.9' \\\r\n  -H 'cache-control: no-cache' \\\r\n  -H 'content-type: application/json' \\\r\n  -b '.AspNetCore.Antiforgery._e27I0JtFpk=CfDJ8CI7vciz_vpFhLi6flAXcCVdWWhnII9d8ICkV1JboBtwdYWHk349stMTpeoL8YvXf6tmjPLuM1biNKz3hMN6BKSRhHOU4dmpb9SqGqJLp0BQZpvqNP1NGwqqmYJITL-AJChcuppGLKGaaxjmiN0hi5o; CSRF-TOKEN=CfDJ8CI7vciz_vpFhLi6flAXcCWduIeQ4l07k70AwFM6BYhK6lfUUhBEVvWxGZOqp9YiCBC-Mkl_C850io4UR0TpGvb6DP-rurqFqT4TaBO_FtdIOYvRT4aQABkKZrzbhSbnW8xjXCwjWzW3nvoYQi-EvRY' \\\r\n  -H 'origin: https://demo.serenity.is' \\\r\n  -H 'pragma: no-cache' \\\r\n  -H 'priority: u=1, i' \\\r\n  -H 'referer: https://demo.serenity.is/Account/Login/?ReturnUrl=%2F' \\\r\n  -H 'sec-ch-ua: \"Not:A-Brand\";v=\"99\", \"Google Chrome\";v=\"145\", \"Chromium\";v=\"145\"' \\\r\n  -H 'sec-ch-ua-mobile: ?1' \\\r\n  -H 'sec-ch-ua-platform: \"Android\"' \\\r\n  -H 'sec-fetch-dest: empty' \\\r\n  -H 'sec-fetch-mode: cors' \\\r\n  -H 'sec-fetch-site: same-origin' \\\r\n  -H 'user-agent: Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Mobile Safari/537.36' \\\r\n  -H 'x-csrf-token: CfDJ8CI7vciz_vpFhLi6flAXcCWduIeQ4l07k70AwFM6BYhK6lfUUhBEVvWxGZOqp9YiCBC-Mkl_C850io4UR0TpGvb6DP-rurqFqT4TaBO_FtdIOYvRT4aQABkKZrzbhSbnW8xjXCwjWzW3nvoYQi-EvRY' \\\r\n  --data-raw '{\"Username\":\"admin\",\"Password\":\"serenity\"}'"
+        "description": "Testing negativo: campos vacíos. Espera 400."
       },
       "response": []
     },
@@ -644,7 +650,321 @@
             "Customer",
             "List"
           ]
+        },
+        "description": "Consulta la grilla de clientes. Baseline: 91 registros. Valida estructura JSON, TotalCount y campos de cada entidad."
+      },
+      "response": []
+    },
+    {
+      "name": "POST - Create Customer",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Status code is 200\", function () {\r",
+              "    pm.response.to.have.status(200);\r",
+              "});\r",
+              "pm.test(\"EntityId is CESBS\", function () {\r",
+              "    const jsonData = pm.response.json();\r",
+              "    pm.expect(jsonData).to.have.property(\"EntityId\");\r",
+              "    pm.expect(jsonData.EntityId).to.eql(\"CESBS\");\r",
+              "});"
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        },
+        {
+          "listen": "prerequest",
+          "script": {
+            "exec": [
+              "const csrf = pm.environment.get(\"csrfToken\");\r",
+              "if (csrf) {\r",
+              "    pm.request.headers.upsert({\r",
+              "        key: \"x-csrf-token\",\r",
+              "        value: csrf\r",
+              "    });\r",
+              "} else {\r",
+              "    console.log(\"No hay csrfToken en environment para POST - Create Customer\");\r",
+              "}"
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
         }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "x-csrf-token",
+            "value": "{{csrfToken}}",
+            "type": "text"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n  \"Entity\": {\r\n    \"CustomerID\": \"CESBS\",\r\n    \"CompanyName\": \"CesarBeasSuarez Industries\",\r\n    \"ContactName\": \"Cesar Beas Suarez\",\r\n    \"ContactTitle\": \"SEO\",\r\n    \"Country\": \"Argentina\",\r\n    \"City\": \"Buenos Aires\",\r\n    \"Phone\": \"3517898989\"\r\n  }\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{baseUrl}}/Services/Northwind/Customer/Create",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "Services",
+            "Northwind",
+            "Customer",
+            "Create"
+          ]
+        },
+        "description": "Crea cliente CESBS vía API. Valida 200 + EntityId retornado."
+      },
+      "response": []
+    },
+    {
+      "name": "POST - Customer List (Verify Create)",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Status code is 200\", function () {\r",
+              "    pm.response.to.have.status(200);\r",
+              "});\r",
+              "\r",
+              "pm.test(\"TotalCount is 92 after create\", function () {\r",
+              "    const jsonData = pm.response.json();\r",
+              "    pm.expect(jsonData.TotalCount).to.eql(92);\r",
+              "});\r",
+              "\r",
+              "pm.test(\"CESBS exists in Entities\", function () {\r",
+              "    const jsonData = pm.response.json();\r",
+              "    const cesbs = jsonData.Entities.find(e => e.CustomerID === \"CESBS\");\r",
+              "    pm.expect(cesbs).to.not.be.undefined;\r",
+              "    pm.expect(cesbs.CompanyName).to.eql(\"CesarBeasSuarez Industries\");\r",
+              "});"
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        },
+        {
+          "listen": "prerequest",
+          "script": {
+            "exec": [
+              "const csrf = pm.environment.get(\"csrfToken\");\r",
+              "if (csrf) {\r",
+              "    pm.request.headers.upsert({\r",
+              "        key: \"x-csrf-token\",\r",
+              "        value: csrf\r",
+              "    });\r",
+              "} else {\r",
+              "    console.log(\"No hay csrfToken en environment para POST - Customer List (Verify Create)\");\r",
+              "}"
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "x-csrf-token",
+            "value": "{{csrfToken}}",
+            "type": "text"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n  \"Take\": 100,\r\n  \"EqualityFilter\": {\r\n    \"Country\": \"\",\r\n    \"City\": \"\",\r\n    \"Representatives\": []\r\n  },\r\n  \"IncludeColumns\": [\r\n    \"CustomerID\",\r\n    \"CompanyName\",\r\n    \"ContactName\",\r\n    \"ContactTitle\",\r\n    \"Region\",\r\n    \"PostalCode\",\r\n    \"Country\",\r\n    \"City\"\r\n  ]\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{baseUrl}}/Services/Northwind/Customer/List",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "Services",
+            "Northwind",
+            "Customer",
+            "List"
+          ]
+        },
+        "description": "Verifica que CESBS apareció en la grilla. TotalCount debe ser 92 y el registro debe existir en Entities."
+      },
+      "response": []
+    },
+    {
+      "name": "POST - Delete Customer",
+      "event": [
+        {
+          "listen": "prerequest",
+          "script": {
+            "exec": [
+              "const csrf = pm.environment.get(\"csrfToken\");\r",
+              "if (csrf) {\r",
+              "    pm.request.headers.upsert({\r",
+              "        key: \"x-csrf-token\",\r",
+              "        value: csrf\r",
+              "    });\r",
+              "} else {\r",
+              "    console.log(\"No hay csrfToken en environment para POST - Delete Customer\");\r",
+              "}"
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        },
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Status code is 200\", function () {\r",
+              "    pm.response.to.have.status(200);\r",
+              "});\r",
+              "\r",
+              "pm.test(\"WasAlreadyDeleted is false\", function () {\r",
+              "    const jsonData = pm.response.json();\r",
+              "    pm.expect(jsonData.WasAlreadyDeleted).to.eql(false);\r",
+              "});"
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "x-csrf-token",
+            "value": "{{csrfToken}}",
+            "type": "text"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n    \"EntityId\": \"CESBS\"\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{baseUrl}}/Services/Northwind/Customer/Delete",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "Services",
+            "Northwind",
+            "Customer",
+            "Delete"
+          ]
+        },
+        "description": "Elimina cliente CESBS. Valida 200 + WasAlreadyDeleted: false."
+      },
+      "response": []
+    },
+    {
+      "name": "POST - Customer List (Verify Delete)",
+      "event": [
+        {
+          "listen": "prerequest",
+          "script": {
+            "exec": [
+              "const csrf = pm.environment.get(\"csrfToken\");\r",
+              "if (csrf) {\r",
+              "    pm.request.headers.upsert({\r",
+              "        key: \"x-csrf-token\",\r",
+              "        value: csrf\r",
+              "    });\r",
+              "} else {\r",
+              "    console.log(\"No hay csrfToken en environment para POST - Customer List (Verify Delete)\");\r",
+              "}"
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        },
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Status code is 200\", function () {\r",
+              "    pm.response.to.have.status(200);\r",
+              "});\r",
+              "\r",
+              "pm.test(\"TotalCount is 91 after delete\", function () {\r",
+              "    const jsonData = pm.response.json();\r",
+              "    pm.expect(jsonData.TotalCount).to.eql(91);\r",
+              "});\r",
+              "\r",
+              "pm.test(\"CESBS no longer exists in Entities\", function () {\r",
+              "    const jsonData = pm.response.json();\r",
+              "    const cesbs = jsonData.Entities.find(e => e.CustomerID === \"CESBS\");\r",
+              "    pm.expect(cesbs).to.be.undefined;\r",
+              "});"
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "x-csrf-token",
+            "value": "{{csrfToken}}",
+            "type": "text"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n  \"Take\": 100,\r\n  \"EqualityFilter\": {\r\n    \"Country\": \"\",\r\n    \"City\": \"\",\r\n    \"Representatives\": []\r\n  },\r\n  \"IncludeColumns\": [\r\n    \"CustomerID\",\r\n    \"CompanyName\",\r\n    \"ContactName\",\r\n    \"ContactTitle\",\r\n    \"Region\",\r\n    \"PostalCode\",\r\n    \"Country\",\r\n    \"City\"\r\n  ]\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{baseUrl}}/Services/Northwind/Customer/List",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "Services",
+            "Northwind",
+            "Customer",
+            "List"
+          ]
+        },
+        "description": "Verifica que CESBS desapareció de la grilla. TotalCount debe volver a 91 y CESBS no debe estar en Entities."
       },
       "response": []
     }
