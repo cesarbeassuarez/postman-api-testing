@@ -1,0 +1,48 @@
+$kind: http-request
+description: "Elimina cliente CESBS. Valida 200 + WasAlreadyDeleted: false."
+url: "{{baseUrl}}/Services/Northwind/Customer/Delete"
+method: POST
+headers:
+  x-csrf-token: "{{csrfToken}}"
+body:
+  type: json
+  content: "{\r\n    \"EntityId\": \"CESBS\"\r\n}"
+scripts:
+  - type: beforeRequest
+    code: "const csrf = pm.environment.get(\"csrfToken\");\r
+
+      if (csrf) {\r
+
+      \    pm.request.headers.upsert({\r
+
+      \        key: \"x-csrf-token\",\r
+
+      \        value: csrf\r
+
+      \    });\r
+
+      } else {\r
+
+      \    console.log(\"No hay csrfToken en environment para POST - Delete
+      Customer\");\r
+
+      }"
+    language: text/javascript
+  - type: afterResponse
+    code: "pm.test(\"Status code is 200\", function () {\r
+
+      \    pm.response.to.have.status(200);\r
+
+      });\r
+
+      \r
+
+      pm.test(\"WasAlreadyDeleted is false\", function () {\r
+
+      \    const jsonData = pm.response.json();\r
+
+      \    pm.expect(jsonData.WasAlreadyDeleted).to.eql(false);\r
+
+      });"
+    language: text/javascript
+order: 14000

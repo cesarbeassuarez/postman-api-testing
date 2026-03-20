@@ -1,0 +1,99 @@
+$kind: http-request
+description: Verifica que CESBS apareció en la grilla. TotalCount debe ser 92 y
+  el registro debe existir en Entities.
+url: "{{baseUrl}}/Services/Northwind/Customer/List"
+method: POST
+headers:
+  x-csrf-token: "{{csrfToken}}"
+body:
+  type: json
+  content: "{\r
+
+    \  \"Take\": 100,\r
+
+    \  \"EqualityFilter\": {\r
+
+    \    \"Country\": \"\",\r
+
+    \    \"City\": \"\",\r
+
+    \    \"Representatives\": []\r
+
+    \  },\r
+
+    \  \"IncludeColumns\": [\r
+
+    \    \"CustomerID\",\r
+
+    \    \"CompanyName\",\r
+
+    \    \"ContactName\",\r
+
+    \    \"ContactTitle\",\r
+
+    \    \"Region\",\r
+
+    \    \"PostalCode\",\r
+
+    \    \"Country\",\r
+
+    \    \"City\"\r
+
+    \  ]\r
+
+    }"
+scripts:
+  - type: afterResponse
+    code: "pm.test(\"Status code is 200\", function () {\r
+
+      \    pm.response.to.have.status(200);\r
+
+      });\r
+
+      \r
+
+      pm.test(\"TotalCount is 92 after create\", function () {\r
+
+      \    const jsonData = pm.response.json();\r
+
+      \    pm.expect(jsonData.TotalCount).to.eql(92);\r
+
+      });\r
+
+      \r
+
+      pm.test(\"CESBS exists in Entities\", function () {\r
+
+      \    const jsonData = pm.response.json();\r
+
+      \    const cesbs = jsonData.Entities.find(e => e.CustomerID ===
+      \"CESBS\");\r
+
+      \    pm.expect(cesbs).to.not.be.undefined;\r
+
+      \    pm.expect(cesbs.CompanyName).to.eql(\"CesarBeasSuarez
+      Industries\");\r
+
+      });"
+    language: text/javascript
+  - type: beforeRequest
+    code: "const csrf = pm.environment.get(\"csrfToken\");\r
+
+      if (csrf) {\r
+
+      \    pm.request.headers.upsert({\r
+
+      \        key: \"x-csrf-token\",\r
+
+      \        value: csrf\r
+
+      \    });\r
+
+      } else {\r
+
+      \    console.log(\"No hay csrfToken en environment para POST - Customer
+      List (Verify Create)\");\r
+
+      }"
+    language: text/javascript
+order: 10000

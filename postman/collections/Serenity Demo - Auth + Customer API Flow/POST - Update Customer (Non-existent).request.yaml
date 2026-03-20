@@ -1,0 +1,65 @@
+$kind: http-request
+description: Intenta modificar un cliente inexistente (XXXXX). Valida 400 +
+  objeto Error con Message. Mismo patrón EntityNotFound que Delete.
+url: "{{baseUrl}}/Services/Northwind/Customer/Update"
+method: POST
+headers:
+  x-csrf-token: "{{csrfToken}}"
+body:
+  type: json
+  content: "{\r
+
+    \    \"Entity\": {\r
+
+    \        \"CustomerID\": \"XXXXX\",\r
+
+    \        \"CompanyName\": \"No Existe\",\r
+
+    \        \"ContactName\": \"Nadie\"\r
+
+    \    },\r
+
+    \    \"EntityId\": \"XXXXX\"\r
+
+    }"
+scripts:
+  - type: afterResponse
+    code: "pm.test(\"Status code is 400\", function () {\r
+
+      \    pm.response.to.have.status(400);\r
+
+      });\r
+
+      \r
+
+      pm.test(\"Error is returned\", function () {\r
+
+      \    const jsonData = pm.response.json();\r
+
+      \    pm.expect(jsonData).to.have.property(\"Error\");\r
+
+      \    pm.expect(jsonData.Error).to.have.property(\"Message\");\r
+
+      });"
+    language: text/javascript
+  - type: beforeRequest
+    code: "const csrf = pm.environment.get(\"csrfToken\");\r
+
+      if (csrf) {\r
+
+      \    pm.request.headers.upsert({\r
+
+      \        key: \"x-csrf-token\",\r
+
+      \        value: csrf\r
+
+      \    });\r
+
+      } else {\r
+
+      \    console.log(\"No hay csrfToken en environment para POST - Update
+      Customer (Non-existent)\");\r
+
+      }"
+    language: text/javascript
+order: 16000

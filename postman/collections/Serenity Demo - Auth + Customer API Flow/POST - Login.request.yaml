@@ -1,0 +1,65 @@
+$kind: http-request
+description: Autentica con credenciales válidas. Cambia la identidad de anónimo
+  a autenticado.
+url: "{{baseUrl}}/Account/Login"
+method: POST
+headers:
+  accept: application/json
+  content-type: application/json
+  x-csrf-token: "{{csrfToken}}"
+body:
+  type: json
+  content: '{"Username":"admin","Password":"serenity"}'
+scripts:
+  - type: beforeRequest
+    code: "const csrf = pm.environment.get(\"csrfToken\");\r
+
+      if (csrf) {\r
+
+      \    pm.request.headers.upsert({\r
+
+      \        key: \"x-csrf-token\",\r
+
+      \        value: csrf\r
+
+      \    });\r
+
+      } else {\r
+
+      \    console.log(\"No hay csrf_token en environment para Customer
+      List\");\r
+
+      }"
+    language: text/javascript
+  - type: afterResponse
+    code: "\r
+
+      // Tests existentes\r
+
+      pm.test(\"Status code is 200\", function () {\r
+
+      \    pm.response.to.have.status(200);\r
+
+      });\r
+
+      \r
+
+      pm.test(\"AspNetAuth cookie exists after login\", function () {\r
+
+      \    const authCookie = pm.cookies.get(\".AspNetAuth\");\r
+
+      \    pm.expect(authCookie).to.not.be.undefined;\r
+
+      });\r
+
+      \r
+
+      pm.test(\"CSRF-TOKEN cookie still present\", function () {\r
+
+      \    const csrfCookie = pm.cookies.get(\"CSRF-TOKEN\");\r
+
+      \    pm.expect(csrfCookie).to.not.be.undefined;\r
+
+      });"
+    language: text/javascript
+order: 2000

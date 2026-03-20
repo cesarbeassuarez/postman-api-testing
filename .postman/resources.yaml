@@ -1,0 +1,11 @@
+# Use this workspace to collaborate
+workspace:
+  id: 1ef312f7-96f7-4230-9e10-71fe53b72e81
+
+localResources:
+  collections:
+    - ..\collections\Serenity Demo - Auth + Customer API
+      Flow.postman_collection.json
+  environments:
+    - ..\environments\serenity-demo.postman_environment.json
+    - ..\collections\postman\environments\serenity-demo.environment.yaml

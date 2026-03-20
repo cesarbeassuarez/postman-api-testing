@@ -1,0 +1,21 @@
+$kind: http-request
+description: Obtiene CSRF token nuevo para la sesión autenticada. Necesario
+  porque el token anterior era de usuario anónimo.
+url: "{{baseUrl}}/Account/Login/?ReturnUrl=%2F"
+method: GET
+queryParams:
+  ReturnUrl: "%2F"
+scripts:
+  - type: afterResponse
+    code: "const csrfCookie = pm.cookies.get(\"CSRF-TOKEN\");\r
+
+      if (csrfCookie) {\r
+
+      \    pm.environment.set(\"csrfToken\", csrfCookie);\r
+
+      \    console.log(\"CSRF token refreshed post-login:\",
+      csrfCookie.substring(0, 50) + \"...\");\r
+
+      }"
+    language: text/javascript
+order: 3000

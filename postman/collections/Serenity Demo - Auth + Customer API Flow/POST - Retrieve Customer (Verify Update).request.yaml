@@ -1,0 +1,64 @@
+$kind: http-request
+description: Segundo Retrieve sobre CESBS para confirmar que el Update se
+  aplicó. Valida que ContactName cambió y que CompanyName y CustomerID no se
+  alteraron.
+url: "{{baseUrl}}/Services/Northwind/Customer/Retrieve"
+method: POST
+headers:
+  x-csrf-token: "{{csrfToken}}"
+body:
+  type: json
+  content: "{\r\n    \"EntityId\": \"CESBS\"\r\n}"
+scripts:
+  - type: afterResponse
+    code: "pm.test(\"Status code is 200\", function () {\r
+
+      \    pm.response.to.have.status(200);\r
+
+      });\r
+
+      \r
+
+      pm.test(\"ContactName was updated\", function () {\r
+
+      \    const jsonData = pm.response.json();\r
+
+      \    pm.expect(jsonData.Entity.ContactName).to.eql(\"Cesar Beas Suarez
+      UPDATED\");\r
+
+      });\r
+
+      \r
+
+      pm.test(\"Other fields unchanged\", function () {\r
+
+      \    const jsonData = pm.response.json();\r
+
+      \    pm.expect(jsonData.Entity.CompanyName).to.eql(\"CesarBeasSuarez
+      Industries\");\r
+
+      \    pm.expect(jsonData.Entity.CustomerID).to.eql(\"CESBS\");\r
+
+      });"
+    language: text/javascript
+  - type: beforeRequest
+    code: "const csrf = pm.environment.get(\"csrfToken\");\r
+
+      if (csrf) {\r
+
+      \    pm.request.headers.upsert({\r
+
+      \        key: \"x-csrf-token\",\r
+
+      \        value: csrf\r
+
+      \    });\r
+
+      } else {\r
+
+      \    console.log(\"No hay csrfToken en environment para POST - Retrieve
+      Customer (Verify Update)\");\r
+
+      }"
+    language: text/javascript
+order: 13000

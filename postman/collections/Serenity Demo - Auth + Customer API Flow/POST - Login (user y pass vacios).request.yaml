@@ -1,0 +1,58 @@
+$kind: http-request
+description: "Testing negativo: campos vacíos. Espera 400."
+url: "{{baseUrl}}/Account/Login"
+method: POST
+headers:
+  accept: application/json
+  content-type: application/json
+  x-csrf-token: "{{csrfToken}}"
+body:
+  type: json
+  content: '{"Username":"","Password":""}'
+scripts:
+  - type: beforeRequest
+    code: "const csrfCookie = pm.cookies.get('CSRF-TOKEN');\r
+
+      if (csrfCookie) {\r
+
+      \    pm.variables.set('csrfToken', csrfCookie);\r
+
+      \    console.log('csrfToken actualizado desde cookie jar');\r
+
+      } else {\r
+
+      \    console.log('No se encontró la cookie CSRF-TOKEN');\r
+
+      }"
+    language: text/javascript
+  - type: afterResponse
+    code: "pm.test(\"Status code is 500\", function () {\r
+
+      \    pm.response.to.have.status(500);\r
+
+      });\r
+
+      \r
+
+      pm.test(\"Response has Exception error\", function () {\r
+
+      \    const jsonData = pm.response.json();\r
+
+      \    pm.expect(jsonData.Error).to.not.be.undefined;\r
+
+      \    pm.expect(jsonData.Error.Code).to.eql(\"Exception\");\r
+
+      });\r
+
+      \r
+
+      pm.test(\"Error message is generic server error\", function () {\r
+
+      \    const jsonData = pm.response.json();\r
+
+      \    pm.expect(jsonData.Error.Message).to.eql(\"An error occurred while
+      processing your request.\");\r
+
+      });"
+    language: text/javascript
+order: 7000

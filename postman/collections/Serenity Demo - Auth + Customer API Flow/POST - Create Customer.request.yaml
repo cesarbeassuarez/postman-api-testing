@@ -1,0 +1,68 @@
+$kind: http-request
+description: Crea cliente CESBS vía API. Valida 200 + EntityId retornado.
+url: "{{baseUrl}}/Services/Northwind/Customer/Create"
+method: POST
+headers:
+  x-csrf-token: "{{csrfToken}}"
+body:
+  type: json
+  content: "{\r
+
+    \  \"Entity\": {\r
+
+    \    \"CustomerID\": \"CESBS\",\r
+
+    \    \"CompanyName\": \"CesarBeasSuarez Industries\",\r
+
+    \    \"ContactName\": \"Cesar Beas Suarez\",\r
+
+    \    \"ContactTitle\": \"SEO\",\r
+
+    \    \"Country\": \"Argentina\",\r
+
+    \    \"City\": \"Buenos Aires\",\r
+
+    \    \"Phone\": \"3517898989\"\r
+
+    \  }\r
+
+    }"
+scripts:
+  - type: afterResponse
+    code: "pm.test(\"Status code is 200\", function () {\r
+
+      \    pm.response.to.have.status(200);\r
+
+      });\r
+
+      pm.test(\"EntityId is CESBS\", function () {\r
+
+      \    const jsonData = pm.response.json();\r
+
+      \    pm.expect(jsonData).to.have.property(\"EntityId\");\r
+
+      \    pm.expect(jsonData.EntityId).to.eql(\"CESBS\");\r
+
+      });"
+    language: text/javascript
+  - type: beforeRequest
+    code: "const csrf = pm.environment.get(\"csrfToken\");\r
+
+      if (csrf) {\r
+
+      \    pm.request.headers.upsert({\r
+
+      \        key: \"x-csrf-token\",\r
+
+      \        value: csrf\r
+
+      \    });\r
+
+      } else {\r
+
+      \    console.log(\"No hay csrfToken en environment para POST - Create
+      Customer\");\r
+
+      }"
+    language: text/javascript
+order: 9000
