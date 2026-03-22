@@ -9,3 +9,11 @@ localResources:
   environments:
     - ..\environments\serenity-demo.postman_environment.json
     - ..\collections\postman\environments\serenity-demo.environment.yaml
+
+# Each entry here maps a local resource to one or more corresponding objects in Postman Cloud
+cloudResources:
+  collections:
+    ..\postman\collections\New Collection: 52961329-2041e393-bcb6-4740-a435-49113ea5a87a
+    ..\postman\collections\Serenity Demo - Auth + Customer API Flow: 52961329-6a92162a-6f27-4d46-8b2a-032ef331e165
+  environments:
+    ..\postman\environments\serenity-demo.environment.yaml: 52961329-072f6be2-9db3-41c9-824d-0846332f4cd0

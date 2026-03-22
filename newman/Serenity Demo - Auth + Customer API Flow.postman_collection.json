@@ -1,0 +1,1431 @@
+{
+  "info": {
+    "_postman_id": "6a92162a-6f27-4d46-8b2a-032ef331e165",
+    "name": "Serenity Demo - Auth + Customer API Flow",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "52961329",
+    "_collection_link": "https://go.postman.co/collection/52961329-6a92162a-6f27-4d46-8b2a-032ef331e165?source=collection_link"
+  },
+  "item": [
+    {
+      "name": "Auth",
+      "item": [
+        {
+          "name": "GET - Login Page",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const csrfCookie = pm.cookies.get('CSRF-TOKEN');\r",
+                  "console.log('GET Login Page - CSRF cookie:', csrfCookie);\r",
+                  "if (csrfCookie) {\r",
+                  "    pm.environment.set('csrfToken', csrfCookie);\r",
+                  "    console.log('csrfToken guardado en environment');\r",
+                  "} else {\r",
+                  "    console.log('No se encontró CSRF-TOKEN en GET - Login Page');\r",
+                  "}\r",
+                  "\r",
+                  "pm.test(\"Status code is 200\", function () {\r",
+                  "    pm.response.to.have.status(200);\r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"Response is HTML\", function () {\r",
+                  "    pm.response.to.have.header(\"Content-Type\");\r",
+                  "    pm.expect(pm.response.headers.get(\"Content-Type\")).to.include(\"text/html\");\r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"CSRF-TOKEN cookie exists\", function () {\r",
+                  "    const csrfCookie = pm.cookies.get(\"CSRF-TOKEN\");\r",
+                  "    pm.expect(csrfCookie).to.not.be.undefined;\r",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            },
+            {
+              "listen": "prerequest",
+              "script": {
+                "exec": [
+                  ""
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          },
+          "request": {
+            "method": "GET",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/Account/Login/?ReturnUrl=%2F",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "Account",
+                "Login",
+                ""
+              ],
+              "query": [
+                {
+                  "key": "ReturnUrl",
+                  "value": "%2F"
+                }
+              ]
+            },
+            "description": "StartFragmentObtiene el token CSRF para usuario anónimo. Primera request del flujo."
+          },
+          "response": []
+        },
+        {
+          "name": "POST - Login",
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "exec": [
+                  "const csrf = pm.environment.get(\"csrfToken\");\r",
+                  "if (csrf) {\r",
+                  "    pm.request.headers.upsert({\r",
+                  "        key: \"x-csrf-token\",\r",
+                  "        value: csrf\r",
+                  "    });\r",
+                  "} else {\r",
+                  "    console.log(\"No hay csrf_token en environment para Customer List\");\r",
+                  "}"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "\r",
+                  "// Tests existentes\r",
+                  "pm.test(\"Status code is 200\", function () {\r",
+                  "    pm.response.to.have.status(200);\r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"AspNetAuth cookie exists after login\", function () {\r",
+                  "    const authCookie = pm.cookies.get(\".AspNetAuth\");\r",
+                  "    pm.expect(authCookie).to.not.be.undefined;\r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"CSRF-TOKEN cookie still present\", function () {\r",
+                  "    const csrfCookie = pm.cookies.get(\"CSRF-TOKEN\");\r",
+                  "    pm.expect(csrfCookie).to.not.be.undefined;\r",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "accept",
+                "value": "application/json"
+              },
+              {
+                "key": "content-type",
+                "value": "application/json"
+              },
+              {
+                "key": "x-csrf-token",
+                "value": "{{csrfToken}}",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"Username\": \"admin\",\r\n    \"Password\": \"serenity\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/Account/Login",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "Account",
+                "Login"
+              ]
+            },
+            "description": "Autentica con credenciales válidas. Cambia la identidad de anónimo a autenticado."
+          },
+          "response": []
+        },
+        {
+          "name": "GET - Refresh Token (Post-Login)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const csrfCookie = pm.cookies.get(\"CSRF-TOKEN\");\r",
+                  "if (csrfCookie) {\r",
+                  "    pm.environment.set(\"csrfToken\", csrfCookie);\r",
+                  "    console.log(\"CSRF token refreshed post-login:\", csrfCookie.substring(0, 50) + \"...\");\r",
+                  "}"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/Account/Login/?ReturnUrl=%2F",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "Account",
+                "Login",
+                ""
+              ],
+              "query": [
+                {
+                  "key": "ReturnUrl",
+                  "value": "%2F"
+                }
+              ]
+            },
+            "description": "Obtiene CSRF token nuevo para la sesión autenticada. Necesario porque el token anterior era de usuario anónimo."
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "CRUD Happy Path",
+      "item": [
+        {
+          "name": "POST - Customer List",
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "exec": [
+                  "const csrf = pm.environment.get(\"csrfToken\");\r",
+                  "if (csrf) {\r",
+                  "    pm.request.headers.upsert({\r",
+                  "        key: \"x-csrf-token\",\r",
+                  "        value: csrf\r",
+                  "    });\r",
+                  "} else {\r",
+                  "    console.log(\"No hay csrfToken en environment para Customer List\");\r",
+                  "}"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code is 200\", function () {\r",
+                  "    pm.response.to.have.status(200);\r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"Response is JSON\", function () {\r",
+                  "    const jsonData = pm.response.json();\r",
+                  "    pm.response.to.have.header(\"Content-Type\");\r",
+                  "    pm.expect(pm.response.headers.get(\"Content-Type\")).to.include(\"application/json\");\r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"Response has Entities array\", function () {\r",
+                  "    const jsonData = pm.response.json();\r",
+                  "    pm.expect(jsonData).to.have.property(\"Entities\");\r",
+                  "    pm.expect(jsonData.Entities).to.be.an(\"array\");\r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"TotalCount is 91\", function () {\r",
+                  "    const jsonData = pm.response.json();\r",
+                  "    pm.expect(jsonData.TotalCount).to.eql(91);\r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"Each entity has CustomerID and CompanyName\", function () {\r",
+                  "    const jsonData = pm.response.json();\r",
+                  "    jsonData.Entities.forEach(function (entity) {\r",
+                  "        pm.expect(entity).to.have.property(\"CustomerID\");\r",
+                  "        pm.expect(entity).to.have.property(\"CompanyName\");\r",
+                  "    });\r",
+                  "});\r",
+                  "\r",
+                  "// Schema validation con Ajv\r",
+                  "const Ajv = require('ajv');\r",
+                  "const ajv = new Ajv({ allErrors: true });\r",
+                  "\r",
+                  "const customerSchema = {\r",
+                  "    type: \"object\",\r",
+                  "    required: [\"Entities\", \"TotalCount\", \"Skip\", \"Take\"],\r",
+                  "    properties: {\r",
+                  "        TotalCount: { type: \"integer\" },\r",
+                  "        Skip: { type: \"integer\" },\r",
+                  "        Take: { type: \"integer\" },\r",
+                  "        Entities: {\r",
+                  "            type: \"array\",\r",
+                  "            items: {\r",
+                  "                type: \"object\",\r",
+                  "                required: [\"CustomerID\", \"CompanyName\", \"ContactTitle\", \"City\", \"Country\",\"Phone\"],\r",
+                  "                properties: {\r",
+                  "                    CustomerID: { type: \"string\" },\r",
+                  "                    CompanyName: { type: \"string\" },\r",
+                  "                    ContactName: { type: \"string\" },\r",
+                  "                    ContactTitle: { type: \"string\" },\r",
+                  "                    Address: { type: \"string\" },\r",
+                  "                    City: { type: \"string\" },\r",
+                  "                    Region: { type: \"string\" },\r",
+                  "                    PostalCode: { type: \"string\" },\r",
+                  "                    Country: { type: \"string\" },\r",
+                  "                    Phone: { type: \"string\" },\r",
+                  "                    Fax: { type: \"string\" }\r",
+                  "                },\r",
+                  "                additionalProperties: false\r",
+                  "            }\r",
+                  "        }\r",
+                  "    },\r",
+                  "    additionalProperties: false\r",
+                  "};\r",
+                  "\r",
+                  "const jsonData = pm.response.json();\r",
+                  "const validate = ajv.compile(customerSchema);\r",
+                  "const valid = validate(jsonData);\r",
+                  "\r",
+                  "\r",
+                  "pm.test(\"Response matches Customer List schema\", function () {\r",
+                  "    if (!valid) {\r",
+                  "        // Resumir errores por tipo\r",
+                  "        const summary = {};\r",
+                  "        validate.errors.forEach(err => {\r",
+                  "            const key = err.schemaPath + \" | \" + err.message;\r",
+                  "            if (!summary[key]) {\r",
+                  "                summary[key] = { count: 0, example: err.dataPath };\r",
+                  "            }\r",
+                  "            summary[key].count++;\r",
+                  "        });\r",
+                  "        \r",
+                  "        console.log(\"Schema errors (resumen):\");\r",
+                  "        Object.keys(summary).forEach(key => {\r",
+                  "            console.log(`  ${key} (${summary[key].count}x) — ejemplo: ${summary[key].example}`);\r",
+                  "        });\r",
+                  "    }\r",
+                  "    pm.expect(valid).to.be.true;\r",
+                  "});\r",
+                  ""
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "x-csrf-token",
+                "value": "{{csrfToken}}",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"Take\": 100,\r\n  \"EqualityFilter\": {\r\n    \"Country\": \"\",\r\n    \"City\": \"\",\r\n    \"Representatives\": []\r\n  },\r\n  \"IncludeColumns\": [\r\n    \"CustomerID\",\r\n    \"CompanyName\",\r\n    \"ContactName\",\r\n    \"ContactTitle\",\r\n    \"Region\",\r\n    \"PostalCode\",\r\n    \"Country\",\r\n    \"City\"\r\n  ]\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/Services/Northwind/Customer/List",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "Services",
+                "Northwind",
+                "Customer",
+                "List"
+              ]
+            },
+            "description": "Consulta la grilla completa de clientes. Valida estructura JSON, TotalCount, campos obligatorios y schema con Ajv."
+          },
+          "response": []
+        },
+        {
+          "name": "POST - Create Customer",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "console.log(\"Iteration data:\", JSON.stringify({\r",
+                  "    CustomerID: pm.iterationData.get(\"CustomerID\"),\r",
+                  "    CompanyName: pm.iterationData.get(\"CompanyName\"),\r",
+                  "    test_type: pm.iterationData.get(\"test_type\"),\r",
+                  "    expected_status: pm.iterationData.get(\"expected_status\")\r",
+                  "}));\r",
+                  "console.log(\"Response:\", JSON.stringify(pm.response.json()));\r",
+                  "\r",
+                  "\r",
+                  "\r",
+                  "const expectedStatus = parseInt(pm.iterationData.get(\"expected_status\"));\r",
+                  "const testType = pm.iterationData.get(\"test_type\");\r",
+                  "\r",
+                  "pm.test(\"Status code is \" + expectedStatus + \" (\" + testType + \")\", function () {\r",
+                  "    pm.response.to.have.status(expectedStatus);\r",
+                  "});\r",
+                  "\r",
+                  "if (expectedStatus === 200) {\r",
+                  "    const jsonData = pm.response.json();\r",
+                  "    pm.test(\"EntityId matches CustomerID\", function () {\r",
+                  "        pm.expect(jsonData).to.have.property(\"EntityId\");\r",
+                  "        pm.expect(jsonData.EntityId).to.eql(pm.iterationData.get(\"CustomerID\"));\r",
+                  "    });\r",
+                  "    pm.environment.set(\"createSuccess\", \"true\");\r",
+                  "} else {\r",
+                  "    pm.test(\"Response has error message\", function () {\r",
+                  "        pm.expect(pm.response.json()).to.have.property(\"Error\");\r",
+                  "    });\r",
+                  "    pm.environment.set(\"createSuccess\", \"false\");\r",
+                  "}"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            },
+            {
+              "listen": "prerequest",
+              "script": {
+                "exec": [
+                  "const csrf = pm.environment.get(\"csrfToken\");\r",
+                  "if (csrf) {\r",
+                  "    pm.request.headers.upsert({\r",
+                  "        key: \"x-csrf-token\",\r",
+                  "        value: csrf\r",
+                  "    });\r",
+                  "} else {\r",
+                  "    console.log(\"No hay csrfToken en environment para POST - Create Customer\");\r",
+                  "}"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "x-csrf-token",
+                "value": "{{csrfToken}}",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"Entity\": {\r\n        \"CustomerID\": \"{{CustomerID}}\",\r\n        \"CompanyName\": \"{{CompanyName}}\",\r\n        \"ContactName\": \"{{ContactName}}\",\r\n        \"ContactTitle\": \"{{ContactTitle}}\",\r\n        \"Country\": \"{{Country}}\",\r\n        \"City\": \"{{City}}\",\r\n        \"Phone\": \"{{Phone}}\"\r\n    }\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/Services/Northwind/Customer/Create",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "Services",
+                "Northwind",
+                "Customer",
+                "Create"
+              ]
+            },
+            "description": "Crea un cliente con datos del CSV. Valida status esperado (200 o 400 según test_type). Guarda flag createSuccess para el flujo CRUD."
+          },
+          "response": []
+        },
+        {
+          "name": "POST - Customer List (Verify Create)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "if (pm.environment.get(\"createSuccess\") === \"true\") {\r",
+                  "    const jsonData = pm.response.json();\r",
+                  "    const customerId = pm.iterationData.get(\"CustomerID\");\r",
+                  "    \r",
+                  "    pm.test(\"Status code is 200\", function () {\r",
+                  "        pm.response.to.have.status(200);\r",
+                  "    });\r",
+                  "    pm.test(\"TotalCount increased after create\", function () {\r",
+                  "        pm.expect(jsonData.TotalCount).to.be.above(91);\r",
+                  "    });\r",
+                  "    pm.test(customerId + \" exists in Entities\", function () {\r",
+                  "        const found = jsonData.Entities.find(e => e.CustomerID === customerId);\r",
+                  "        pm.expect(found).to.not.be.undefined;\r",
+                  "    });\r",
+                  "} else {\r",
+                  "    pm.test(\"SKIP - Create failed, skipping verify\", function () {\r",
+                  "        pm.expect(true).to.be.true;\r",
+                  "    });\r",
+                  "}"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            },
+            {
+              "listen": "prerequest",
+              "script": {
+                "exec": [
+                  "const csrf = pm.environment.get(\"csrfToken\");\r",
+                  "if (csrf) {\r",
+                  "    pm.request.headers.upsert({\r",
+                  "        key: \"x-csrf-token\",\r",
+                  "        value: csrf\r",
+                  "    });\r",
+                  "} else {\r",
+                  "    console.log(\"No hay csrfToken en environment para POST - Customer List (Verify Create)\");\r",
+                  "}"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "x-csrf-token",
+                "value": "{{csrfToken}}",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"Take\": 100,\r\n  \"EqualityFilter\": {\r\n    \"Country\": \"\",\r\n    \"City\": \"\",\r\n    \"Representatives\": []\r\n  },\r\n  \"IncludeColumns\": [\r\n    \"CustomerID\",\r\n    \"CompanyName\",\r\n    \"ContactName\",\r\n    \"ContactTitle\",\r\n    \"Region\",\r\n    \"PostalCode\",\r\n    \"Country\",\r\n    \"City\"\r\n  ]\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/Services/Northwind/Customer/List",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "Services",
+                "Northwind",
+                "Customer",
+                "List"
+              ]
+            },
+            "description": "Verifica que el cliente creado aparezca en la grilla. TotalCount debe haber aumentado. Si el Create falló, se salta."
+          },
+          "response": []
+        },
+        {
+          "name": "POST - Retrieve Customer",
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "exec": [
+                  "const csrf = pm.environment.get(\"csrfToken\");\r",
+                  "if (csrf) {\r",
+                  "    pm.request.headers.upsert({\r",
+                  "        key: \"x-csrf-token\",\r",
+                  "        value: csrf\r",
+                  "    });\r",
+                  "} else {\r",
+                  "    console.log(\"No hay csrfToken en environment para POST - Retrieve Customer\");\r",
+                  "}"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "if (pm.environment.get(\"createSuccess\") === \"true\") {\r",
+                  "    const jsonData = pm.response.json();\r",
+                  "    const customerId = pm.iterationData.get(\"CustomerID\");\r",
+                  "    \r",
+                  "    pm.test(\"Status code is 200\", function () {\r",
+                  "        pm.response.to.have.status(200);\r",
+                  "    });\r",
+                  "    pm.test(\"Entity is \" + customerId, function () {\r",
+                  "        pm.expect(jsonData.Entity.CustomerID).to.eql(customerId);\r",
+                  "        pm.expect(jsonData.Entity.ContactName).to.eql(pm.iterationData.get(\"ContactName\"));\r",
+                  "    });\r",
+                  "} else {\r",
+                  "    pm.test(\"SKIP - Create failed, skipping retrieve\", function () {\r",
+                  "        pm.expect(true).to.be.true;\r",
+                  "    });\r",
+                  "}"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "x-csrf-token",
+                "value": "{{csrfToken}}",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"EntityId\": \"{{CustomerID}}\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/Services/Northwind/Customer/Retrieve",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "Services",
+                "Northwind",
+                "Customer",
+                "Retrieve"
+              ]
+            },
+            "description": "Obtiene el cliente recién creado vía /Customer/Retrieve. Valida CustomerID y ContactName originales. Si el Create falló, se salta."
+          },
+          "response": []
+        },
+        {
+          "name": "POST - Update Customer",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "if (pm.environment.get(\"createSuccess\") === \"true\") {\r",
+                  "    pm.test(\"Status code is 200\", function () {\r",
+                  "        pm.response.to.have.status(200);\r",
+                  "    });\r",
+                  "    pm.test(\"EntityId is \" + pm.iterationData.get(\"CustomerID\"), function () {\r",
+                  "        pm.expect(pm.response.json().EntityId).to.eql(pm.iterationData.get(\"CustomerID\"));\r",
+                  "    });\r",
+                  "} else {\r",
+                  "    pm.test(\"SKIP - Create failed, skipping update\", function () {\r",
+                  "        pm.expect(true).to.be.true;\r",
+                  "    });\r",
+                  "}"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            },
+            {
+              "listen": "prerequest",
+              "script": {
+                "exec": [
+                  "const csrf = pm.environment.get(\"csrfToken\");\r",
+                  "if (csrf) {\r",
+                  "    pm.request.headers.upsert({\r",
+                  "        key: \"x-csrf-token\",\r",
+                  "        value: csrf\r",
+                  "    });\r",
+                  "} else {\r",
+                  "    console.log(\"No hay csrfToken en environment para POST - Update Customer\");\r",
+                  "}"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "x-csrf-token",
+                "value": "{{csrfToken}}",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"Entity\": {\r\n        \"CustomerID\": \"{{CustomerID}}\",\r\n        \"CompanyName\": \"{{CompanyName}}\",\r\n        \"ContactName\": \"{{UpdatedContactName}}\",\r\n        \"ContactTitle\": \"{{ContactTitle}}\",\r\n        \"Country\": \"{{Country}}\",\r\n        \"City\": \"{{City}}\",\r\n        \"Phone\": \"{{Phone}}\"\r\n    },\r\n    \"EntityId\": \"{{CustomerID}}\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/Services/Northwind/Customer/Update",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "Services",
+                "Northwind",
+                "Customer",
+                "Update"
+              ]
+            },
+            "description": "Modifica ContactName con valor del CSV (UpdatedContactName). Valida 200 + EntityId. Si el Create falló, se salta."
+          },
+          "response": []
+        },
+        {
+          "name": "POST - Retrieve Customer (Verify Update)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "if (pm.environment.get(\"createSuccess\") === \"true\") {\r",
+                  "    const jsonData = pm.response.json();\r",
+                  "    \r",
+                  "    pm.test(\"Status code is 200\", function () {\r",
+                  "        pm.response.to.have.status(200);\r",
+                  "    });\r",
+                  "    pm.test(\"ContactName was updated\", function () {\r",
+                  "        pm.expect(jsonData.Entity.ContactName).to.eql(pm.iterationData.get(\"UpdatedContactName\"));\r",
+                  "    });\r",
+                  "    pm.test(\"Other fields unchanged\", function () {\r",
+                  "        pm.expect(jsonData.Entity.CompanyName).to.eql(pm.iterationData.get(\"CompanyName\"));\r",
+                  "    });\r",
+                  "} else {\r",
+                  "    pm.test(\"SKIP - Create failed, skipping verify update\", function () {\r",
+                  "        pm.expect(true).to.be.true;\r",
+                  "    });\r",
+                  "}"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            },
+            {
+              "listen": "prerequest",
+              "script": {
+                "exec": [
+                  "const csrf = pm.environment.get(\"csrfToken\");\r",
+                  "if (csrf) {\r",
+                  "    pm.request.headers.upsert({\r",
+                  "        key: \"x-csrf-token\",\r",
+                  "        value: csrf\r",
+                  "    });\r",
+                  "} else {\r",
+                  "    console.log(\"No hay csrfToken en environment para POST - Retrieve Customer (Verify Update)\");\r",
+                  "}"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "x-csrf-token",
+                "value": "{{csrfToken}}",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"EntityId\": \"{{CustomerID}}\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/Services/Northwind/Customer/Retrieve",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "Services",
+                "Northwind",
+                "Customer",
+                "Retrieve"
+              ]
+            },
+            "description": "Segundo Retrieve para confirmar que ContactName cambió y CompanyName no se alteró. Si el Create falló, se salta."
+          },
+          "response": []
+        },
+        {
+          "name": "POST - Delete Customer",
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "exec": [
+                  "const csrf = pm.environment.get(\"csrfToken\");\r",
+                  "if (csrf) {\r",
+                  "    pm.request.headers.upsert({\r",
+                  "        key: \"x-csrf-token\",\r",
+                  "        value: csrf\r",
+                  "    });\r",
+                  "} else {\r",
+                  "    console.log(\"No hay csrfToken en environment para POST - Delete Customer\");\r",
+                  "}"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "if (pm.environment.get(\"createSuccess\") === \"true\") {\r",
+                  "    pm.test(\"Status code is 200\", function () {\r",
+                  "        pm.response.to.have.status(200);\r",
+                  "    });\r",
+                  "    pm.test(\"WasAlreadyDeleted is false\", function () {\r",
+                  "        pm.expect(pm.response.json().WasAlreadyDeleted).to.eql(false);\r",
+                  "    });\r",
+                  "} else {\r",
+                  "    pm.test(\"SKIP - Create failed, skipping delete\", function () {\r",
+                  "        pm.expect(true).to.be.true;\r",
+                  "    });\r",
+                  "}"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "x-csrf-token",
+                "value": "{{csrfToken}}",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"EntityId\": \"{{CustomerID}}\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/Services/Northwind/Customer/Delete",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "Services",
+                "Northwind",
+                "Customer",
+                "Delete"
+              ]
+            },
+            "description": "Elimina el cliente creado. Valida 200 + WasAlreadyDeleted: false. Si el Create falló, se salta."
+          },
+          "response": []
+        },
+        {
+          "name": "POST - Customer List (Verify Delete)",
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "exec": [
+                  "const csrf = pm.environment.get(\"csrfToken\");\r",
+                  "if (csrf) {\r",
+                  "    pm.request.headers.upsert({\r",
+                  "        key: \"x-csrf-token\",\r",
+                  "        value: csrf\r",
+                  "    });\r",
+                  "} else {\r",
+                  "    console.log(\"No hay csrfToken en environment para POST - Customer List (Verify Delete)\");\r",
+                  "}"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "if (pm.environment.get(\"createSuccess\") === \"true\") {\r",
+                  "    const jsonData = pm.response.json();\r",
+                  "    const customerId = pm.iterationData.get(\"CustomerID\");\r",
+                  "    \r",
+                  "    pm.test(\"Status code is 200\", function () {\r",
+                  "        pm.response.to.have.status(200);\r",
+                  "    });\r",
+                  "    pm.test(\"TotalCount is 91 after delete\", function () {\r",
+                  "        pm.expect(jsonData.TotalCount).to.eql(91);\r",
+                  "    });\r",
+                  "    pm.test(customerId + \" no longer exists\", function () {\r",
+                  "        const found = jsonData.Entities.find(e => e.CustomerID === customerId);\r",
+                  "        pm.expect(found).to.be.undefined;\r",
+                  "    });\r",
+                  "} else {\r",
+                  "    pm.test(\"SKIP - Create failed, skipping verify delete\", function () {\r",
+                  "        pm.expect(true).to.be.true;\r",
+                  "    });\r",
+                  "}"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "x-csrf-token",
+                "value": "{{csrfToken}}",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"Take\": 100,\r\n  \"EqualityFilter\": {\r\n    \"Country\": \"\",\r\n    \"City\": \"\",\r\n    \"Representatives\": []\r\n  },\r\n  \"IncludeColumns\": [\r\n    \"CustomerID\",\r\n    \"CompanyName\",\r\n    \"ContactName\",\r\n    \"ContactTitle\",\r\n    \"Region\",\r\n    \"PostalCode\",\r\n    \"Country\",\r\n    \"City\"\r\n  ]\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/Services/Northwind/Customer/List",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "Services",
+                "Northwind",
+                "Customer",
+                "List"
+              ]
+            },
+            "description": "Verifica que el cliente ya no esté en la grilla. TotalCount debe volver a 91. Si el Create falló, se salta."
+          },
+          "response": []
+        },
+        {
+          "name": "POST - Update Customer (Non-existent)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code is 400\", function () {\r",
+                  "    pm.response.to.have.status(400);\r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"Error is returned\", function () {\r",
+                  "    const jsonData = pm.response.json();\r",
+                  "    pm.expect(jsonData).to.have.property(\"Error\");\r",
+                  "    pm.expect(jsonData.Error).to.have.property(\"Message\");\r",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            },
+            {
+              "listen": "prerequest",
+              "script": {
+                "exec": [
+                  "const csrf = pm.environment.get(\"csrfToken\");\r",
+                  "if (csrf) {\r",
+                  "    pm.request.headers.upsert({\r",
+                  "        key: \"x-csrf-token\",\r",
+                  "        value: csrf\r",
+                  "    });\r",
+                  "} else {\r",
+                  "    console.log(\"No hay csrfToken en environment para POST - Update Customer (Non-existent)\");\r",
+                  "}"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "x-csrf-token",
+                "value": "{{csrfToken}}",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"Entity\": {\r\n        \"CustomerID\": \"XXXXX\",\r\n        \"CompanyName\": \"No Existe\",\r\n        \"ContactName\": \"Nadie\"\r\n    },\r\n    \"EntityId\": \"XXXXX\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/Services/Northwind/Customer/Update",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "Services",
+                "Northwind",
+                "Customer",
+                "Update"
+              ]
+            },
+            "description": "Intenta modificar un cliente inexistente (XXXXX). Valida 400 + objeto Error con Message."
+          },
+          "response": []
+        }
+      ],
+      "event": [
+        {
+          "listen": "prerequest",
+          "script": {
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {},
+            "exec": [
+              ""
+            ]
+          }
+        },
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {},
+            "exec": [
+              ""
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Negative Tests",
+      "item": [
+        {
+          "name": "POST - Login (user correcto, pass mal)",
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "exec": [
+                  "const csrfCookie = pm.cookies.get('CSRF-TOKEN');\r",
+                  "if (csrfCookie) {\r",
+                  "    pm.variables.set('csrfToken', csrfCookie);\r",
+                  "    console.log('csrfToken actualizado desde cookie jar');\r",
+                  "} else {\r",
+                  "    console.log('No se encontró la cookie CSRF-TOKEN');\r",
+                  "}"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code is 400\", function () {\r",
+                  "    pm.response.to.have.status(400);\r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"Response has AuthenticationError\", function () {\r",
+                  "    const jsonData = pm.response.json();\r",
+                  "    pm.expect(jsonData.Error).to.not.be.undefined;\r",
+                  "    pm.expect(jsonData.Error.Code).to.eql(\"AuthenticationError\");\r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"Error message is generic (no field hint)\", function () {\r",
+                  "    const jsonData = pm.response.json();\r",
+                  "    pm.expect(jsonData.Error.Message).to.eql(\"Invalid username or password!\");\r",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "accept",
+                "value": "application/json"
+              },
+              {
+                "key": "content-type",
+                "value": "application/json"
+              },
+              {
+                "key": "x-csrf-token",
+                "value": "{{csrfToken}}",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\"Username\":\"admin\",\"Password\":\"abcd\"}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/Account/Login",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "Account",
+                "Login"
+              ]
+            },
+            "description": "Testing negativo: credenciales con password incorrecta. Espera 400 + AuthenticationError."
+          },
+          "response": []
+        },
+        {
+          "name": "POST - Login (user mal, pass correcta)",
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "exec": [
+                  "const csrfCookie = pm.cookies.get('CSRF-TOKEN');\r",
+                  "if (csrfCookie) {\r",
+                  "    pm.variables.set('csrfToken', csrfCookie);\r",
+                  "    console.log('csrfToken actualizado desde cookie jar');\r",
+                  "} else {\r",
+                  "    console.log('No se encontró la cookie CSRF-TOKEN');\r",
+                  "}"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code is 400\", function () {\r",
+                  "    pm.response.to.have.status(400);\r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"Response has AuthenticationError\", function () {\r",
+                  "    const jsonData = pm.response.json();\r",
+                  "    pm.expect(jsonData.Error).to.not.be.undefined;\r",
+                  "    pm.expect(jsonData.Error.Code).to.eql(\"AuthenticationError\");\r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"Error message is generic (no field hint)\", function () {\r",
+                  "    const jsonData = pm.response.json();\r",
+                  "    pm.expect(jsonData.Error.Message).to.eql(\"Invalid username or password!\");\r",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "accept",
+                "value": "application/json"
+              },
+              {
+                "key": "content-type",
+                "value": "application/json"
+              },
+              {
+                "key": "x-csrf-token",
+                "value": "{{csrfToken}}",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\"Username\":\"abcd\",\"Password\":\"serenity\"}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/Account/Login",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "Account",
+                "Login"
+              ]
+            },
+            "description": "Testing negativo: usuario inexistente. Espera 400 + AuthenticationError (mismo mensaje, no revela qué campo falló)."
+          },
+          "response": []
+        },
+        {
+          "name": "POST - Login (user y pass incorrectos)",
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "exec": [
+                  "const csrfCookie = pm.cookies.get('CSRF-TOKEN');\r",
+                  "if (csrfCookie) {\r",
+                  "    pm.variables.set('csrfToken', csrfCookie);\r",
+                  "    console.log('csrfToken actualizado desde cookie jar');\r",
+                  "} else {\r",
+                  "    console.log('No se encontró la cookie CSRF-TOKEN');\r",
+                  "}"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code is 400\", function () {\r",
+                  "    pm.response.to.have.status(400);\r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"Response has AuthenticationError\", function () {\r",
+                  "    const jsonData = pm.response.json();\r",
+                  "    pm.expect(jsonData.Error).to.not.be.undefined;\r",
+                  "    pm.expect(jsonData.Error.Code).to.eql(\"AuthenticationError\");\r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"Error message is generic (no field hint)\", function () {\r",
+                  "    const jsonData = pm.response.json();\r",
+                  "    pm.expect(jsonData.Error.Message).to.eql(\"Invalid username or password!\");\r",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "accept",
+                "value": "application/json"
+              },
+              {
+                "key": "content-type",
+                "value": "application/json"
+              },
+              {
+                "key": "x-csrf-token",
+                "value": "{{csrfToken}}",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\"Username\":\"abcd\",\"Password\":\"abcd\"}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/Account/Login",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "Account",
+                "Login"
+              ]
+            },
+            "description": "Testing negativo: ambos campos incorrectos. Espera 400 + AuthenticationError."
+          },
+          "response": []
+        },
+        {
+          "name": "POST - Login (user y pass vacios)",
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "exec": [
+                  "const csrfCookie = pm.cookies.get('CSRF-TOKEN');\r",
+                  "if (csrfCookie) {\r",
+                  "    pm.variables.set('csrfToken', csrfCookie);\r",
+                  "    console.log('csrfToken actualizado desde cookie jar');\r",
+                  "} else {\r",
+                  "    console.log('No se encontró la cookie CSRF-TOKEN');\r",
+                  "}"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code is 500\", function () {\r",
+                  "    pm.response.to.have.status(500);\r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"Response has Exception error\", function () {\r",
+                  "    const jsonData = pm.response.json();\r",
+                  "    pm.expect(jsonData.Error).to.not.be.undefined;\r",
+                  "    pm.expect(jsonData.Error.Code).to.eql(\"Exception\");\r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"Error message is generic server error\", function () {\r",
+                  "    const jsonData = pm.response.json();\r",
+                  "    pm.expect(jsonData.Error.Message).to.eql(\"An error occurred while processing your request.\");\r",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "accept",
+                "value": "application/json"
+              },
+              {
+                "key": "content-type",
+                "value": "application/json"
+              },
+              {
+                "key": "x-csrf-token",
+                "value": "{{csrfToken}}",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\"Username\":\"\",\"Password\":\"\"}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/Account/Login",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "Account",
+                "Login"
+              ]
+            },
+            "description": "Testing negativo: campos vacíos. Espera 400."
+          },
+          "response": []
+        }
+      ]
+    }
+  ]
+}

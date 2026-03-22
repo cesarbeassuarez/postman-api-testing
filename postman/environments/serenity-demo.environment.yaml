@@ -1,0 +1,9 @@
+name: serenity-demo
+values:
+  - key: baseUrl
+    value: ""
+    enabled: true
+  - key: csrfToken
+    value: ""
+    enabled: true
+color: null

@@ -1,0 +1,7 @@
+CustomerID,CompanyName,ContactName,ContactTitle,Country,City,Phone,UpdatedContactName,expected_status,test_type
+TST01,Test Company One,John Doe,Manager,USA,New York,1234567890,John Doe UPDATED,200,valid
+TST02,Test Company Two,Jane Smith,Director,Argentina,Buenos Aires,3517898989,Jane Smith UPDATED,200,valid
+TST03,,John Doe,Manager,USA,New York,1234567890,,400,missing_company
+,Test Company Four,John Doe,Manager,USA,New York,1234567890,,400,missing_id
+ALFKI,Test Company Five,John Doe,Manager,USA,New York,1234567890,,400,duplicate
+TST06,Bug Simulation Co,Test User,Tester,USA,Boston,5551234567,Test User UPDATED,400,forced_bug
